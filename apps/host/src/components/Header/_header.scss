@@ -1,0 +1,70 @@
+x.dashboard-header {
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: #833177;
+  color: #fff;
+  height: 56px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1195;
+}
+/* IZQUIERDA */
+.dashboard-header__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.dashboard-header__logo-link {
+  display: flex;
+  align-items: center;
+}
+.dashboard-header__divider {
+  width: 1px;
+  height: 28px;
+  background-color: rgba(255, 255, 255, 0.7);
+  margin: 0 0.75rem;
+  &--right {
+    margin: 0 1rem;
+  }
+}
+.dashboard-header__title {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+/* DERECHA */
+.dashboard-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.dashboard-header__location {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.dashboard-header__location-text {
+  font-size: 0.85rem;
+}
+.dashboard-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.dashboard-header__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  &--small {
+    font-size: 1rem;
+  }
+}
+.dashboard-header__username {
+  font-size: 0.75rem;
+  padding-left: 0.75rem;
+  margin-left: 0.5rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.7);
+}

@@ -1,0 +1,48 @@
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header (icon + título) */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #4b4b4b;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.icon {
+  font-size: 20px;
+  color: #833177;
+}
+
+.label {
+  letter-spacing: 0.01em;
+}
+
+/* Contenido numérico */
+.cardBody {
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.value {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2933;
+}
+
+.helper {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: #6b6b6b;
+}

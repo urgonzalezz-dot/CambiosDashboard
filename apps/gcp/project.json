@@ -1,0 +1,92 @@
+{
+  "name": "gcp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/gcp/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/gcp",
+        "index": "apps/gcp/src/index.html",
+        "baseHref": "/",
+        "main": "apps/gcp/src/main.js",
+        "tsConfig": "apps/gcp/tsconfig.app.json",
+        "assets": ["apps/gcp/src/favicon.ico", "apps/gcp/src/assets"],
+        "styles": ["apps/gcp/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "apps/gcp/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/gcp/src/environments/environment.js",
+              "with": "apps/gcp/src/environments/environment.prod.js"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/gcp/webpack.config.prod.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "gcp:build",
+        "hmr": true,
+        "port": 4204
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "gcp:build:development"
+        },
+        "production": {
+          "buildTarget": "gcp:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "executor": "@nx/react:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "gcp:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "gcp:serve:development"
+        },
+        "production": {
+          "serveTarget": "gcp:serve:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/gcp/jest.config.js"
+      }
+    }
+  }
+}

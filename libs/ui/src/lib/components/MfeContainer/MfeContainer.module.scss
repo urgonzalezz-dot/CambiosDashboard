@@ -1,0 +1,56 @@
+/**
+ * MfeContainer - Estilos de contención para micro-frontends
+ * 
+ * Principios aplicados:
+ * 1. No usar viewport units (vw/vh) - usar porcentajes relativos
+ * 2. Contención CSS para evitar afectar al host
+ * 3. Isolation para crear nuevo stacking context
+ * 4. Dimensiones relativas al contenedor padre
+ */
+
+.mfeContainer {
+  /* Dimensiones relativas al contenedor padre del host */
+  width: 100%;
+  height: 100%;
+  min-width: 0; /* Crítico: permite que flex/grid hijos no desborden */
+  min-height: 0;
+
+  /* Contención CSS - evita que el MFE afecte al layout del host */
+  contain: layout style; /* No incluimos 'size' para permitir altura dinámica */
+  
+  /* Isolation - crea nuevo stacking context (z-index independiente) */
+  isolation: isolate;
+  
+  /* Display por defecto */
+  display: flex;
+  flex-direction: column;
+  
+  /* El MFE es responsable de su propio scroll */
+  overflow: visible; /* El scroll lo maneja el host en .mfeSandbox */
+  
+  /* Position relative para que absolute dentro del MFE funcione */
+  position: relative;
+  
+  /* Box sizing consistente */
+  box-sizing: border-box;
+
+  /* Reset de estilos que podrían heredarse del host */
+  /* Cada MFE define sus propias fuentes/colores */
+}
+
+/**
+ * Variante para MFEs que necesitan scroll interno
+ * (en lugar de dejar que el host maneje el scroll)
+ */
+.mfeContainer--withScroll {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scroll en iOS */
+}
+
+/**
+ * Asegurar que hijos directos no rompan el contenedor
+ */
+.mfeContainer > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}

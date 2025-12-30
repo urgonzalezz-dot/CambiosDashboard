@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.itemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.label {
+  font-size: 13px;
+  color: #333333;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.barTrack {
+  width: 100%;
+  height: 10px;
+  background: #eeeeee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: #9ca3af;
+}
+.barFill[data-tone='success'] {
+  background: #22c55e;
+}
+.barFill[data-tone='failure'] {
+  background: #ef4444;
+}
+
+.emptyNote {
+  font-size: 12px;
+  color: #6b7280;
+}

@@ -1,0 +1,122 @@
+/**
+ * Layout Wrapper - Estilos para trabajar con Drawer de Material-UI
+ * 
+ * El Drawer de MUI usa position: fixed y z-index: 1200
+ * Necesitamos ajustar el contenido principal para que no se superponga
+ */
+
+.layoutWrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.header {
+  /* Header ENCIMA del Drawer */
+  position: relative;
+  z-index: 1300;
+  height: 4rem;
+  min-height: 4rem;
+  width: 100%;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.contentWrapper {
+  /* Contenedor para sidebar + content */
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.drawerSpacer {
+  /* 
+   * Espaciador que ocupa el mismo ancho que el Drawer
+   * Esto evita que el contenido se superponga con el Drawer
+   */
+  flex-shrink: 0;
+  width: 240px; /* Ancho típico del Drawer abierto */
+
+  /* Transición suave cuando el drawer cambia de tamaño */
+  transition: width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+/* Cuando el drawer está cerrado (opcional, requiere state management) */
+.drawerSpacer.closed {
+  width: 65px; /* Ancho del Drawer cerrado */
+}
+
+.mainContent {
+  /* El contenido principal ocupa el resto del espacio */
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mfeSandbox {
+  /* Sandbox para los MFEs con contención fuerte */
+  flex: 1;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  padding: 1.5rem;
+  box-sizing: border-box;
+
+  /* CONTENCIÓN FUERTE */
+  isolation: isolate;
+  contain: layout style paint;
+  position: relative;
+  background: #f5f5f5;
+}
+
+.mfeSandbox > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Scrollbar personalizada */
+.mfeSandbox::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mfeSandbox::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.mfeSandbox::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.mfeSandbox::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/**
+ * MEDIA QUERIES PARA RESPONSIVE
+ */
+@media (max-width: 1200px) {
+  .drawerSpacer {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .drawerSpacer {
+    width: 0; /* En móvil, el drawer puede ser temporal/overlay */
+  }
+
+  .mfeSandbox {
+    padding: 1rem;
+  }
+}

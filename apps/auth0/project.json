@@ -1,0 +1,92 @@
+{
+  "name": "auth0",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/auth0/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/auth0",
+        "index": "apps/auth0/src/index.html",
+        "baseHref": "/",
+        "main": "apps/auth0/src/main.js",
+        "tsConfig": "apps/auth0/tsconfig.app.json",
+        "assets": ["apps/auth0/src/favicon.ico", "apps/auth0/src/assets"],
+        "styles": ["apps/auth0/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "apps/auth0/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/auth0/src/environments/environment.js",
+              "with": "apps/auth0/src/environments/environment.prod.js"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "webpackConfig": "apps/auth0/webpack.config.prod.js"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/react:module-federation-dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "auth0:build",
+        "hmr": true,
+        "port": 4202
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "auth0:build:development"
+        },
+        "production": {
+          "buildTarget": "auth0:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "serve-static": {
+      "executor": "@nx/react:module-federation-static-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "serveTarget": "auth0:serve"
+      },
+      "configurations": {
+        "development": {
+          "serveTarget": "auth0:serve:development"
+        },
+        "production": {
+          "serveTarget": "auth0:serve:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/auth0/jest.config.js"
+      }
+    }
+  }
+}

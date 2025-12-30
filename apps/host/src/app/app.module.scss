@@ -1,0 +1,65 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* apps/host/src/app/app.module.scss */
+
+/* Opcional: asegurar que el host ocupe toda la pantalla */
+:global(html, body, #root) {
+  height: 100%;
+  margin: 0;
+}
+
+.appShell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh; // la reja ocupa toda la altura
+  background-color: #f5f5f5;
+}
+
+/* HEADER */
+.appShellHeader {
+  position: relative;
+  z-index: 1300; // por encima de cualquier cosa del contenido
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
+  background-color: #ffffff;
+}
+
+/* FILA INFERIOR: MENU + CONTENIDO */
+.appShellMain {
+  display: grid;
+  grid-template-columns: 230px 1fr; // ancho típico menu / contenido
+  min-height: 0; // importante para que el contenido pueda hacer overflow
+}
+
+/* CONTENIDO DE MFEs */
+.appShellContent {
+  position: relative; // "jaula" para overlays relativos
+  padding: 1rem;
+  overflow-y: auto;
+  min-width: 0; // crítico en layouts con grid/flex para evitar desbordes
+  background-color: #f5f5f5;
+}
+
+/* Opcional: si quieres más restricción aún para los MFEs */
+.appShellContent > div {
+  max-width: 1440px;
+  margin: 0 auto;
+}

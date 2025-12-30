@@ -1,0 +1,29 @@
+{
+  "name": "auth0-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/auth0-e2e/src",
+  "tags": [],
+  "implicitDependencies": ["auth0"],
+  "targets": {
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/auth0-e2e/cypress.config.js",
+        "testingType": "e2e",
+        "devServerTarget": "auth0:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "auth0:serve:production"
+        },
+        "ci": {
+          "devServerTarget": "auth0:serve-static"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

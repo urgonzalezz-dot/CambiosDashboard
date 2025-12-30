@@ -1,0 +1,214 @@
+/* apps/host/src/pages/Layout/_Layout.module.scss */
+
+/**
+ * ARQUITECTURA DE CONTENCIÓN PARA MICRO-FRONTENDS CON DRAWER DE MUI
+ * 
+ * Este layout trabaja con el Drawer de Material-UI de la librería:
+ * 1. Header fijo de 4rem (z-index: 1300, por encima del drawer)
+ * 2. Sidebar con Drawer de MUI (position: fixed, z-index: 1200)
+ * 3. Main con padding-left para compensar el drawer
+ * 4. Área MFE con contención fuerte
+ */
+
+html {
+  -webkit-text-size-adjust: 100%;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  line-height: 1.5;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.shell {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+.header {
+  /* Header fijo en la parte superior, POR ENCIMA del drawer */
+  position: relative;
+  z-index: 1300; /* Debe ser mayor que el z-index del Drawer (1200) */
+  height: 4rem;
+  min-height: 4rem;
+  max-height: 4rem;
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #fff; /* Asegura que el header tenga fondo */
+}
+
+.side {
+  /* El Drawer de MUI usa position: fixed y su propio z-index (1200) */
+  /* No necesitamos estilos aquí, el Drawer se posiciona automáticamente */
+}
+
+.mainContainer {
+  /* Contenedor flex que ocupa el resto del espacio debajo del header */
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+
+  /* IMPORTANTE: Padding-top para compensar el header si es necesario */
+  /* El header ya está fuera del flujo con z-index, pero aquí no hay overlap */
+}
+
+.main {
+  /* El main debe dejar espacio para el Drawer a la izquierda */
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+
+  /* 
+   * Padding izquierdo para compensar el ancho del Drawer
+   * El Drawer de la librería tiene diferentes anchos:
+   * - Abierto: ~240px (15% o más dependiendo del viewport)
+   * - Cerrado: ~65px
+   * 
+   * Usamos una variable CSS para hacerlo dinámico
+   */
+  padding-left: 0; /* Se ajustará dinámicamente con JavaScript o media queries */
+
+  /* Transición suave cuando el drawer se abre/cierra */
+  transition: padding-left 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+/**
+ * ESPACIADOR PARA EL DRAWER
+ * 
+ * Este div invisible ocupa el mismo espacio que el Drawer de MUI
+ * Empuja el contenido principal hacia la derecha, evitando superposición
+ * 
+ * IMPORTANTE: El ancho debe coincidir EXACTAMENTE con el Drawer de la librería
+ * Si el Drawer usa porcentaje (ej: 15%), usar el mismo aquí
+ * Si usa px fijo (ej: 240px), usar el mismo
+ */
+.drawerSpacer {
+  flex-shrink: 0;
+  /* 
+   * Si el Drawer usa porcentaje (común en la librería)
+   */
+  width: 0%;
+
+  /*
+   * Si queremos cambiar a usas pixeles fijos pero no recomendable 
+   */
+  /* width: 240px; */
+
+  transition: width 225ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+}
+
+/* 
+ * Ajustar según el comportamiento del Drawer
+ * Inspecciona el Drawer con DevTools para ver su ancho en diferentes sizes
+ */
+@media (max-width: 1200px) {
+  .drawerSpacer {
+    width: 15%; /* REVISAR ESTO  */
+  }
+}
+
+@media (max-width: 768px) {
+  .drawerSpacer {
+    /* 
+     * En móvil, si el Drawer es overlay (position: absolute sobre el contenido),
+     * el espaciador debe ser 0
+     */
+    width: 0;
+  }
+}
+
+/**
+ * SANDBOX PARA MICRO-FRONTENDS
+ * 
+ * 1. Define el espacio disponible para los MFEs
+ * 2. Crea una "jaula" de contención (isolation + contain)
+ * 3. Maneja el scroll para todos los MFEs => Pequeño bug aquí REVISAR 
+ * 4. Proporciona padding igual 
+ */
+.mfeSandbox {
+  /* Ocupa todo el espacio disponible del main */
+  height: 100%;
+  width: 100%;
+
+  /* Scroll para el contenido de los MFEs */
+  /*  overflow-x: hidden;
+  overflow-y: auto; */
+  -webkit-overflow-scrolling: touch; /* Smooth scroll en iOS */
+
+  /* Padding consistente para todos los MFEs */
+  padding: 1.5rem;
+
+  /* Box sizing para que el padding no desborde */
+  box-sizing: border-box;
+
+  /* CONTENCIÓN FUERTE - "Jaula" para los MFEs */
+
+  /* Isolation: crea nuevo stacking context (z-index de MFEs no afecta al host) */
+  isolation: isolate;
+
+  /* Contain: limita el impacto de layout/paint de los MFEs */
+  /* No incluimos 'size' porque los MFEs pueden tener altura variable */
+  contain: layout style paint;
+
+  /* Position relative para que absolute dentro de MFEs funcione */
+  position: relative;
+
+  /* Opcional: fondo para visualizar el área del sandbox */
+  background: #f5f5f5;
+}
+
+/**
+ * REGLAS ADICIONALES PARA HIJOS DIRECTOS DEL SANDBOX
+ * 
+ * Asegura que los MFEs no rompan el contenedor
+ */
+.mfeSandbox > * {
+  /* Los MFEs no pueden exceder el ancho del sandbox */
+  max-width: 100%;
+
+  /* Box sizing consistente */
+  box-sizing: border-box;
+}
+
+/**
+ * SCROLLBAR PERSONALIZADA (opcional)
+ * 
+ * Mejora la experiencia visual del scroll
+ */
+.mfeSandbox::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mfeSandbox::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.mfeSandbox::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.mfeSandbox::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}

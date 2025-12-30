@@ -1,0 +1,24 @@
+/**
+ * Asegura que el Header de la librería esté POR ENCIMA del Drawer de MUI
+ * Drawer z-index: 1200 (default de MUI)
+ * Header debe ser: 1300+
+ */
+
+.headerWrapper {
+  position: relative;
+  z-index: 1301 !important; /* Por encima del Drawer (1200) */
+  height: 4rem;
+  min-height: 4rem;
+  max-height: 4rem;
+  width: 100%;
+  flex-shrink: 0;
+
+  /* Asegurar que tenga fondo para no mostrar contenido debajo */
+  background: #fff;
+
+  /* Aplicar z-index a todos los hijos */
+  & > * {
+    position: relative;
+    z-index: 1301 !important;
+  }
+}

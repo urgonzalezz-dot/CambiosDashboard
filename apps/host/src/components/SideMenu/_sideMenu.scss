@@ -1,0 +1,18 @@
+.menu__icon {
+  min-height: 1.875rem !important;
+}
+
+.menu-item {
+  display: block;
+  transition-duration: 100ms;
+  transition-timing-function: ease-in-out;
+
+  &:hover * {
+    color: #833177;
+  }
+}
+
+.link {
+  text-decoration: none;
+  color: #767676;
+}

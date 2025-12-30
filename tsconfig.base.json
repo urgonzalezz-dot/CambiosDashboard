@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "dashboard/Module": ["dashboard/src/remote-entry.js"],
+      "auth0/Module": ["auth0/src/remote-entry.js"],
+      "dependencies/Module": ["dependencies/src/remote-entry.js"],
+      "gcp/Module": ["gcp/src/remote-entry.js"],
+      "@libs/hooks": ["libs/hooks/src/index.js"],
+      "@libs/ui": ["libs/ui/src/index.js"],
+      "@libs/utilities": ["libs/utilities/src/index.js"],
+      "@libs/redux": ["redux/src/index.js"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

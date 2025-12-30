@@ -1,0 +1,39 @@
+/**
+ * Dashboard Page Styles
+ * 
+ * IMPORTANTE: No usar viewport units (vw, vh)
+ * Usar porcentajes y unidades relativas al contenedor padre
+ */
+
+.dashboardContainer {
+  /* Ancho relativo al contenedor padre del host */
+  width: 100%;
+  
+  /* No definir altura fija - dejar que el contenido determine la altura */
+  min-height: 0;
+  
+  /* Padding interno del dashboard */
+  padding: 1.5rem 2rem;
+  
+  /* Box sizing para que el padding no desborde */
+  box-sizing: border-box;
+  
+  /* Display flex para organizar los hijos */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  
+  /* Asegurar que no desborde horizontalmente */
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/**
+ * Responsive: ajustar padding en pantallas pequeñas
+ */
+@media (max-width: 768px) {
+  .dashboardContainer {
+    padding: 1rem;
+    gap: 1rem;
+  }
+}

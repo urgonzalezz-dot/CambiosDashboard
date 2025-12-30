@@ -1,0 +1,57 @@
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.gridColumns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0; // importante en layouts grid/flex con cards
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+
+  p {
+    margin: 0;
+    font-size: 1rem;
+  }
+}
+
+.cardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 10px;
+  margin-left: 35px;
+  margin-right: 35px;
+}
+
+.columnEmpty {
+  margin: 0;
+  color: #6b7280;
+}
+
+.empty {
+  padding: 24px;
+}
