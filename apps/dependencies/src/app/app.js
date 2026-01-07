@@ -1,21 +1,28 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { useHostContext, UpdateCard, GenericCard } from '@libs/ui';
 import ExtensionIcon from '@mui/icons-material/Extension';
 import DependenciesGrid from '../components/DependenciesGrid';
+import ExecutiveSummaryCard from '../components/ExecutiveSummaryCard/ExecutiveSummaryCard';
+import PrioritySection from '../components/PrioritySection/PrioritySection';
 import styles from './app.module.scss';
 
 import { useGithubLockfile } from '../hooks/useGithubLockfile/useGithubLockfile';
 import { useNpmRegistry } from '../hooks/useNpmRegistry/useNpmRegistry';
-import {
-  buildDependenciesComparison,
-  getStatsFromList,
-} from '../services/buildDependenciesComparison';
+import { analyzeAllDependencies } from '../services/dependenciesAnalyzer';
+import { getStatsFromList } from '../services/buildDependenciesComparison';
 
 export function App() {
   const hostContext = useHostContext();
   const isInHost = hostContext?.layout?.isInHost || false;
 
   const [dependencies, setDependencies] = useState([]);
+  const [analysisResult, setAnalysisResult] = useState(null);
   const [lastUpdate, setLastUpdate] = useState('—');
 
   const {
@@ -26,6 +33,7 @@ export function App() {
 
   const {
     getLatestVersion,
+    getPackageMetadata,
     loading: loadingNpm,
     error: errorNpm,
   } = useNpmRegistry();
@@ -33,6 +41,7 @@ export function App() {
   const loading = loadingLock || loadingNpm;
   const error = errorLock || errorNpm;
 
+  // Stats legacy (para compatibilidad)
   const stats = useMemo(() => getStatsFromList(dependencies), [dependencies]);
 
   const handleRefresh = useCallback(async () => {
@@ -42,21 +51,34 @@ export function App() {
           'Actualizando análisis de dependencias...'
         );
 
-      // 1) Lockfile
-      const lock = await fetchLockfileDependencies();
-      if (lock?.err) throw lock.err;
+      // 1) Obtener lockfile completo
+      const lockfileData = await fetchLockfileDependencies();
+      if (lockfileData?.err) throw lockfileData.err;
 
-      // 2) Construir lista (por ahora solo dependencies; luego sumas devDependencies con toggle)
-      const lockedMap = lock.dependencies || {};
+      // 2) Construir lockfileJson en formato esperado
+      const lockfileJson = {
+        packages: {
+          '': {
+            dependencies: lockfileData.dependencies || {},
+            devDependencies: lockfileData.devDependencies || {},
+          },
+          // Agregar packages si están disponibles
+          ...(lockfileData.packages || {}),
+        },
+      };
 
-      const list = await buildDependenciesComparison({
-        lockedMap,
+      const result = await analyzeAllDependencies({
+        lockfileJson,
         getLatestVersion,
-        limit: 20, // demo estable; luego lo haces configurable
+        getPackageMetadata,
+        limit: 50,
+        topN: 15,
+        repoCommit: null,
       });
 
-      // 3) Guardar estado UI
-      setDependencies(list);
+      setAnalysisResult(result);
+
+      setDependencies(result.dependencies);
 
       const now = new Date().toLocaleString('es-MX', {
         year: 'numeric',
@@ -76,7 +98,23 @@ export function App() {
       if (isInHost)
         hostContext.notifications?.show('Error al actualizar el análisis');
     }
-  }, [fetchLockfileDependencies, getLatestVersion, isInHost, hostContext]);
+  }, [
+    fetchLockfileDependencies,
+    getLatestVersion,
+    getPackageMetadata,
+    isInHost,
+    hostContext,
+  ]);
+
+  const didFetchRef = useRef(false);
+
+  useEffect(() => {
+    // Evita doble llamada en dev (React 18 StrictMode)
+    if (didFetchRef.current) return;
+    didFetchRef.current = true;
+
+    handleRefresh();
+  }, [handleRefresh]);
 
   const handleDependencyInfo = (dependency) => {
     if (isInHost) {
@@ -93,6 +131,22 @@ export function App() {
         repository="Entrada única"
         onRefresh={handleRefresh}
       />
+
+      {analysisResult && (
+        <ExecutiveSummaryCard
+          riskDistribution={analysisResult.executiveSummary.riskDistribution}
+          stats={analysisResult.executiveSummary.stats}
+          metadata={analysisResult.metadata}
+        />
+      )}
+
+      {analysisResult &&
+        analysisResult.executiveSummary.topPriority.length > 0 && (
+          <PrioritySection
+            topPriority={analysisResult.executiveSummary.topPriority}
+            onDependencyInfo={handleDependencyInfo}
+          />
+        )}
 
       <GenericCard title="Análisis de dependencias" icon={<ExtensionIcon />}>
         {loading && <p>Cargando dependencias…</p>}

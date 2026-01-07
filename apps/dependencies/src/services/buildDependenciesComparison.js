@@ -3,6 +3,24 @@ const normalizeVersion = (v) => {
   return String(v).trim();
 };
 
+/**
+ * Extrae el autor/organización del nombre del paquete o metadata
+ * @param {string} packageName
+ * @returns {string}
+ */
+const extractAuthor = (packageName) => {
+  if (!packageName) return '';
+
+  // Si es scoped package (@org/package), extraer @org
+  if (packageName.startsWith('@')) {
+    const parts = packageName.split('/');
+    return parts[0] || '';
+  }
+
+  // Para paquetes no-scoped, retornar vacío (se podría enriquecer con metadata NPM)
+  return '';
+};
+
 export const buildDependenciesComparison = async ({
   lockedMap,
   getLatestVersion,
@@ -29,7 +47,7 @@ export const buildDependenciesComparison = async ({
 
     return {
       packageName,
-      author: '',
+      author: extractAuthor(packageName),
       currentVersion: current || 'N/A',
       latestVersion: latest || 'N/A',
       isOutdated,

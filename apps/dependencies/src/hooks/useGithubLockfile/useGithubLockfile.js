@@ -9,6 +9,7 @@ export const useGithubLockfile = () => {
     const owner = 'urgonzalezz-dot';
     const repo = 'prueba-api-git';
     const path = 'Proyecto/package-lock.json';
+    const token = '';
 
     const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
 
@@ -16,7 +17,7 @@ export const useGithubLockfile = () => {
       url,
       {},
       { 'X-GitHub-Api-Version': '2022-11-28' },
-      token // aquí entra como Bearer <token> por nuestro hook
+      token
     );
 
     if (res?.err) return { err: res.err };
